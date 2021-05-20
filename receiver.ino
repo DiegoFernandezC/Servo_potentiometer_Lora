@@ -11,7 +11,6 @@ Servo myservo;
 #define RFM95_RST 4
 #define RFM95_INT 7
 
-
 // Set frequency
 #define RF95_FREQ 915.0
 
@@ -50,12 +49,13 @@ void setup() {
     Serial.println("setFrequency failed");
     while (1);
   }
-  Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
+  Serial.print("Set Freq to: "); 
+  Serial.println(RF95_FREQ);
 
   // The default transmitter power is 13dBm, using PA_BOOST.
   // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then
   // you can set transmitter powers from 5 to 23 dBm:
-  rf95.setTxPower(5, false);
+  rf95.setTxPower(5);
 }
 
 void loop() {
@@ -65,12 +65,12 @@ void loop() {
     uint8_t len = sizeof(buf);
 
     if (rf95.recv(buf, &len)){
-      int valor = atoi((char *)buf);   //CHAR to INT.
-      myservo.write(valor);
+      int valor = buf[0];                   //Received value
+      myservo.write(valor);                 //Value to servo
       digitalWrite(LED, HIGH);
       Serial.print("Received: ");
       Serial.println(valor);
-       Serial.print("RSSI: ");
+      Serial.print("RSSI: ");
       Serial.println(rf95.lastRssi(), DEC);
 
       // Send a reply
